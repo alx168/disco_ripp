@@ -1,0 +1,104 @@
+[gd_scene load_steps=15 format=3 uid="uid://d3tcnedb457km"]
+
+[ext_resource type="PackedScene" uid="uid://bqsdy75gc47fj" path="res://player.tscn" id="1_6xjcp"]
+[ext_resource type="PackedScene" uid="uid://jyfihees24dn" path="res://gui.tscn" id="2_4nwvv"]
+[ext_resource type="Script" path="res://interactable.gd" id="2_dxrlw"]
+[ext_resource type="Script" path="res://detectPlayer.gd" id="3_xscw4"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_n1e2o"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8qxtx"]
+albedo_color = Color(0.427451, 0.435294, 0.827451, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_mwx03"]
+data = PackedVector3Array(-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_rp6or"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o5xmf"]
+albedo_color = Color(1, 0.152941, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_rxeje"]
+material = SubResource("StandardMaterial3D_o5xmf")
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_nx63l"]
+radius = 2.22119
+
+[sub_resource type="Animation" id="Animation_0gdyf"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player/Sprite3D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_ov31f"]
+resource_name = "ring"
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Player/Sprite3D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0.1, 0.2, 0.3, 0.4, 0.5)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_do6hy"]
+_data = {
+"RESET": SubResource("Animation_0gdyf"),
+"ring": SubResource("Animation_ov31f")
+}
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(40, 0, 0, 0, 1, 0, 0, 0, 40, 0, 0, 0)
+mesh = SubResource("BoxMesh_n1e2o")
+skeleton = NodePath("")
+surface_material_override/0 = SubResource("StandardMaterial3D_8qxtx")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_mwx03")
+
+[node name="Player" parent="." instance=ExtResource("1_6xjcp")]
+
+[node name="interactable" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.1253, 6.52018, -4.19921)
+script = ExtResource("2_dxrlw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interactable"]
+shape = SubResource("SphereShape3D_rp6or")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="interactable"]
+mesh = SubResource("SphereMesh_rxeje")
+skeleton = NodePath("../..")
+
+[node name="Area3D" type="Area3D" parent="interactable"]
+script = ExtResource("3_xscw4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="interactable/Area3D"]
+shape = SubResource("SphereShape3D_nx63l")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.536298, 0.844029, 0, -0.844029, 0.536298, 0, 32.7362, 16.6078)
+
+[node name="GUI" parent="." instance=ExtResource("2_4nwvv")]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_do6hy")
+}
+
+[connection signal="body_entered" from="interactable/Area3D" to="interactable/Area3D" method="_on_body_entered"]
